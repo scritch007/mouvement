@@ -1,18 +1,13 @@
-<html>
-	<head>
-		<title>Mon mouvement</title>
-	</head>
-	<body>
 <script>
 
 
-var parameters = []
+var parameters = new Object();
 
 function getUrlVars()
 {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
+    for(var i = 1; i < hashes.length; i++)
     {
       hash = hashes[i].split('=');
       vars.push(hash[0]);
@@ -25,41 +20,58 @@ function getUrlVars()
 
 function getparameters()
 {
-	var params = getUrlVars();
-	regions = document.getElementById("regions");
-	region = params['region'];
-	if( null !== region)
-	{
-		for( var i=0; i< regions.length; i++)
-		{
-			if ( regions[i].value === region)
-			{
-				regions.selectedIndex = i;
-				break;
-			}
-		}
-	}
-	address_input = document.getElementById("address");
-	address = params['address'];
+    var params = getUrlVars();
+    regions = document.getElementById("regions");
+    region = params['region'];
+    if( null !== region)
+    {
+        for( var i=0; i< regions.length; i++)
+        {
+            if ( regions[i].value === region)
+            {
+                regions.selectedIndex = i;
+                break;
+            }
+        }
+    }
+    address_input = document.getElementById("address");
+    address = params['address'];
 
-	address_input.value = address;	
+    address_input.value = address;
 }
 
 function combo()
 {
-	theinput = document.getElementById("regions");
-	var idx = theinput.selectedIndex;
-	var content = theinput.options[idx].value;
-	//getparameters();
-	insertParam("region", content);
+    theinput = document.getElementById("regions");
+    var idx = theinput.selectedIndex;
+    var content = theinput.options[idx].value;
+    //getparameters();
+    insertParam("region", content);
 
-	address_input = document.getElementById("address");
-	
-	insertParam("address", address_input.value);
+    address_input = document.getElementById("address");
 
-    	document.location.search = parameters; 
+    insertParam("address", address_input.value);
+
+    var builded_parameters = [];
+
+    for (k in parameters)
+    {
+        if (parameters.hasOwnProperty(k))
+        {
+            builded_parameters[builded_parameters.length]=k+'='+parameters[k];
+        }
+    }
+        document.location.search = builded_parameters.join('&');
 }
 
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
 
 function insertParam(key, value)
 {
@@ -68,37 +80,19 @@ function insertParam(key, value)
 
     var kvp = parameters;
 
-    var i=kvp.length; var x; while(i--) 
-    {
-        x = kvp[i].split('=');
+    kvp[key] = value;
 
-        if (x[0]==key)
-        {
-                x[1] = value;
-                kvp[i] = x.join('=');
-                break;
-        }
-    }
-
-    if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-
-    //this will reload the page, it's likely better to store this until finished
-    parameters = kvp.join('&');
+    parameters=kvp;
 }
 window.onload=getparameters;
 </script>
 
-   		<select id="regions" >
-		{% for item in regions %}
-   			<option> {{ item }} </option>
-		{% end %}
-   		</select>
-		<label>adresse</label>
-		<input type="text" id="address"/>
+<select id="regions" >
+{% for item in regions %}
+    <option> {{ item }} </option>
+{% end %}
+</select>
+<label>adresse</label>
+<input type="text" id="address"/>
 
-		<button type="button" onclick="combo()"> Ok </button>
-
-
-	</body>
-
-</html>
+<button type="button" onclick="combo()"> Ok </button>

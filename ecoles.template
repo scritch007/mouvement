@@ -1,5 +1,12 @@
 <html>
+<head>
+	<title>Mon mouvement</title>
+</head>
+
 <body>
+
+{% include "info.template" %}
+
     {% for ecole in list_ecoles %}
         {{ ecole.ecole }} ( {{ ecole.distance_text }} ) 
     {% end %}

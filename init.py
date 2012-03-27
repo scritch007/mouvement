@@ -68,18 +68,20 @@ class MainHandler(tornado.web.RequestHandler):
             region = self.request.arguments['region'][0]
         if 'address' in self.request.arguments:
             address = self.request.arguments['address'][0]
-        if not region or not address:
-            self.render("info.template", regions=['marne', 'aisne', 'ardennes'])
-        else:
+        list_ecoles = []
+        if region and address:
             list_ecoles = handle_treatment(region, address)
-            if list_ecoles is None:
-                self.write("Impossible de lire le fichier ecole")
-            else:
-                self.render("ecoles.template", list_ecoles=list_ecoles)
+        self.render("ecoles.template", list_ecoles=list_ecoles, regions=["marne",])
+
+settings = {
+    "static_path": os.path.join(os.path.dirname(__file__), "static"),
+    "facebook_api_key": "182298695221795",
+    "facebook_secret": "82e06767fc962808629cd9a47b204621"
+}
 
 application = tornado.web.Application([
     (r"/", MainHandler),
-])
+], **settings)
 
 if __name__ == "__main__":
     application.listen(8888)
